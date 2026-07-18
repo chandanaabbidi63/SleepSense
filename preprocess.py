@@ -96,13 +96,13 @@ def preprocess_user_input(user_data, encoders_path='encoders.pkl'):
     
     df['BMI Category'] = encoders['bmi'].transform(df['BMI Category'])
     
-    # Handle Sleep Disorder - map unseen values
+    # Handle Sleep Disorder - map 'None' to NaN or first class
     sleep_disorder = df['Sleep Disorder'].iloc[0]
     if sleep_disorder in encoders['sleep_disorder'].classes_:
         df['Sleep Disorder'] = encoders['sleep_disorder'].transform([sleep_disorder])[0]
     else:
-        # Map to 'None' if unseen
-        df['Sleep Disorder'] = encoders['sleep_disorder'].transform(['None'])[0]
+        # Map 'None' to NaN (which was in the training data)
+        df['Sleep Disorder'] = np.nan
     
     # Scale features
     X = encoders['scaler'].transform(df)
